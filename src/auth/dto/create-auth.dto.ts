@@ -7,7 +7,7 @@ export class CreateAuthDto {
     })
     @ApiProperty({
         example: 'John',
-        description: 'Enter Your Name',
+        description: 'Enter Your First Name',
       })      
       firstName: string;
 
