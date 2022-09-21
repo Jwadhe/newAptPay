@@ -1,0 +1,41 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsString } from "class-validator";
+
+export class CreateAuthDto {
+    @IsString({
+        message: 'Require First Name!',
+    })
+    @ApiProperty({
+        example: 'John',
+        description: 'Enter Your Name',
+      })      
+      firstName: string;
+
+      @IsString({
+        message: 'Require Last Name!',
+    })
+    @ApiProperty({
+        example: 'Sir',
+        description: 'Enter Your Last Name',
+      })      
+      lastName: string;
+
+      @IsString({
+        message: 'Require Email!',
+    })
+    @ApiProperty({
+        example: 'John@gmail.com',
+        description: 'Enter Your Email',
+      })      
+      email: string;
+
+      @IsString({
+        message: 'Require Password!',
+    })
+    @ApiProperty({
+        example: 'John@123',
+        description: 'Enter Your Password',
+      })      
+      password: string;
+
+}
