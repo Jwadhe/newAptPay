@@ -1,14 +1,20 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose'
+import { Auth, AuthSchema } from './auth/schema/auth.schema';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/aptPay'),
+    ConfigModule.forRoot(), 
+    MongooseModule.forRoot('mongodb://localhost/newAptPay'),
+    MongooseModule.forFeature([
+      { name: Auth.name, schema: AuthSchema },
+  ]) as DynamicModule,
     AuthModule,
     UsersModule],
   controllers: [AppController],
