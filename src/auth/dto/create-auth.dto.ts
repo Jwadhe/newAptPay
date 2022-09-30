@@ -1,19 +1,19 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateAuthDto {
-    @IsString({
-        message: 'Require First Name!',
-    })
+    // @IsString({
+    //     message: 'Require First Name!',
+    // })
     @ApiProperty({
         example: 'John',
         description: 'Enter Your First Name',
       })      
       firstName: string;
 
-      @IsString({
-        message: 'Require Last Name!',
-    })
+    //   @IsString({
+    //     message: 'Require Last Name!',
+    // })
     @ApiProperty({
         example: 'Sir',
         description: 'Enter Your Last Name',
@@ -36,6 +36,6 @@ export class CreateAuthDto {
         example: 'John@123',
         description: 'Enter Your Password',
       })      
-      password: string;
+      password: string;     
 
 }

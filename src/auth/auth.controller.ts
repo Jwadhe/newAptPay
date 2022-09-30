@@ -1,35 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus } from '@nestjs/common';
+import {
+  Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Res, BadGatewayException, ExceptionFilter,
+  Catch, ArgumentsHost, HttpException, HttpStatus, ForbiddenException
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
+
 
   @Post('/signup')
-  async signup(@Body() createAuthDto: CreateAuthDto) {
-    const userdata = await this.authService.signup(createAuthDto);
-    if(userdata){
-      return{
-        message: 'User already exist',
-        status: false,
-        httpStatus: HttpStatus.BAD_REQUEST
+  async Signup(@Body() CreateAuthDto: CreateAuthDto) {
+    try {
+      const data = await this.authService.signup(CreateAuthDto);
+      // console.log("data - ", data);
+      return {
+        HttpStatus: 200,
+        data,
       }
     }
-    if (!userdata) {
-      throw {
-          message: 'User Not found',
-          status: false,
-          httpStatus: HttpStatus.NOT_FOUND,
-      }
+    catch (error) {
+      throw new ForbiddenException();
+    }
   }
-       return {            
-            status: true,
-            httpStatus: HttpStatus.CREATED,
-            message: 'Success',
-            data: userdata,            
-        }
+
+  @Post('/create')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async create(@Body() createAuthDto: CreateAuthDto) {
+    await this.authService.create(createAuthDto)
+    return 'This action returns a user';
+  }
+
+  // @Get(':id')
+  // findOne(@Param('id') id: number) {
+  //   console.log(typeof id === 'number'); // true
+  //   return 'This action returns a user';
+  // }
+
+  @Post('/signin')
+  async signin(@Body() createAuthDto: CreateAuthDto): Promise<any> {
+
+    const userdata = await this.authService.signin(createAuthDto);
+    console.log(userdata, 'dataFind');
+
+    return {
+      status: true,
+      httpStatus: HttpStatus.CREATED,
+      message: 'Success',
+      data: userdata,
+    }
   }
 
   @Get()

@@ -6,11 +6,17 @@ import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose'
 import { Auth, AuthSchema } from './auth/schema/auth.schema';
 import { ConfigModule } from '@nestjs/config';
+import { env } from 'process';
 
-
+ 
 @Module({
   imports: [
-    ConfigModule.forRoot(), 
+    ConfigModule.forRoot({
+      envFilePath: !env ? '.env' : `.env.${env}`,
+      isGlobal: true,
+      expandVariables: true,
+      
+    }), 
     MongooseModule.forRoot('mongodb://localhost/newAptPay'),
     MongooseModule.forFeature([
       { name: Auth.name, schema: AuthSchema },
