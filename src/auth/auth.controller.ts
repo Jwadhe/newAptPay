@@ -40,11 +40,11 @@ export class AuthController {
   // }
 
   @Post('/signin')
-  async signin(@Body() createAuthDto: CreateAuthDto): Promise<any> {
+  async signin(@Body() email: string,password: string): Promise<any> {
 
-    const userdata = await this.authService.signin(createAuthDto);
-    console.log(userdata, 'dataFind');
-
+    const userdata = await this.authService.signin(email, password);
+    // console.log(userdata, 'dataFind');
+ 
     return {
       status: true,
       httpStatus: HttpStatus.CREATED,
@@ -72,4 +72,5 @@ export class AuthController {
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
   }
+  
 }

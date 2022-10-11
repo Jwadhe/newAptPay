@@ -36,6 +36,15 @@ export class CreateAuthDto {
         example: 'John@123',
         description: 'Enter Your Password',
       })      
-      password: string;     
+      password: string;
+      
+      @IsString({
+        message: 'Require Active!',
+    })
+    @ApiProperty({
+        example: 'ACTIVE',
+        description: 'User is Active',
+      })      
+      isActive: string; 
 
 }

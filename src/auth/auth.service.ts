@@ -7,9 +7,12 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { databaseProviders } from './mongoose';
 import { Auth, AuthDocument } from './schema/auth.schema';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt'
+import * as argon2 from 'argon2'
 @Injectable()
 export class AuthService {
+
   sucesHandle: any;
 
   constructor
@@ -113,53 +116,58 @@ export class AuthService {
     }
   }
 
-  // async signin(CreateAuthDto: CreateAuthDto): Promise<any> {
-  //   console.log(CreateAuthDto,'dataaa');
+  async signin(email: string, password: string): Promise<any> {
+    // console.log(CreateAuthDto,'dataaa');
     
-  //   try {
-  //     const user = this.authModel.find({
-  //       ...CreateAuthDto
-  //     })
-  //     console.log('Data - ', user);
-      
-  //     const salt = await bcrypt.genSalt();
-  //     const hash = await bcrypt.hash(CreateAuthDto.password, salt);
-  //     const body = { 
-  //       email: CreateAuthDto.email,
-  //       password: hash
-  //     }
-      
-  //     const newUser = new this.authModel(body);
-  //     return await newUser.save();
-
-  //   } catch (e) {
-  //     return {
-  //       status: false,
-  //       message: "Something went wrong!",
-  //       httpStatus: 400
-  //     }
-  //   }
-
-  // }
-
-
-  async signin(CreateAuthDto: CreateAuthDto): Promise<any> {
     try {
-        const foundUser = await this.authModel.findOne({ email: CreateAuthDto.email }).exec();
-        if (foundUser) {
-            const { password } = foundUser;
-            let checkPassword = await bcrypt.compare(CreateAuthDto.password, password);
-            if (!checkPassword) {
-              return this.sucesHandle.erroresponse(HttpStatus.UNAUTHORIZED,'Incorrect password or Not found')              
+      const user = this.authModel.find({email })
+      if(!user){
+        throw new Error('User Not Registered')
+      }
+      // if (user == false) {
+      //   throw new Error('Email not verified');
+      // }
+      // console.log('Data - ', user);
 
-            }            
-        }
-        return this.sucesHandle.erroresponse(HttpStatus.UNAUTHORIZED, 'Incorrect username or password');
+      const validPassword = await argon2.verify(password, password)
+      
+      const body = { 
+        email,
+        password
+      }
+      
+      const newUser = new this.authModel(body);
+      console.log(newUser,'newUser data found');
+      
+      return newUser;
 
-    } catch (error) {
-        throw new ForbiddenException('something went wrong please try again later');
+    } catch (e) {
+      return {
+        status: false,
+        message: "Something went wrong!",
+        httpStatus: 400
+      }
     }
-}
+  }
+
+
+//   async signin(CreateAuthDto: CreateAuthDto): Promise<any> {
+//     try {
+//         const foundUser = await this.authModel.findOne({ email: CreateAuthDto.email }).exec();
+//         if (foundUser) {
+//             const { password } = foundUser;
+//             let checkPassword = await bcrypt.compare(CreateAuthDto.password, password);
+//             if (!checkPassword) {
+//               return this.sucesHandle.erroresponse(HttpStatus.UNAUTHORIZED,'Incorrect password or Not found')              
+
+//             }            
+//         }
+//         return this.sucesHandle.erroresponse(HttpStatus.UNAUTHORIZED, 'Incorrect username or password');
+
+//     } catch (error) {
+//         throw new ForbiddenException('something went wrong please try again later!!!!');
+//     }
+// }
 
 
   async findAll() {
@@ -174,7 +182,7 @@ export class AuthService {
     return `This action updates a #${id} auth`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} auth`;
   }
 }

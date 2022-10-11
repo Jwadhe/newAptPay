@@ -16,5 +16,8 @@ export class Auth {
 
     @Prop()
     password: string;
+
+    @Prop()
+    isActive: string;
 };
 export const AuthSchema = SchemaFactory.createForClass(Auth)
