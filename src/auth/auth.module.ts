@@ -16,7 +16,7 @@ import { JwtModule } from '@nestjs/jwt';
       // load: [configuration]
     }),  
     UsersModule, PassportModule, JwtModule.register({
-      secret: 'secretKey',
+      secret: 'ja@123xyfheurykjjajdfuhef!h',
       signOptions: { expiresIn: '60s' },
     }),
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),     

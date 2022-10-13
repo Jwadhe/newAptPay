@@ -12,14 +12,19 @@ export class AuthController {
 
 
   @Post('/signup')
-  async Signup(@Body() CreateAuthDto: CreateAuthDto) {
+  async Signup(@Res() res, @Body() CreateAuthDto: CreateAuthDto) {
     try {
       const data = await this.authService.signup(CreateAuthDto);
       // console.log("data - ", data);
-      return {
-        HttpStatus: 200,
-        data,
-      }
+      return res.status(HttpStatus.CREATED).send({
+        message: "User has been created successfully",
+        data
+    })
+      // return res.status  {
+      //   HttpStatus: 200,
+      //   data,
+        
+      // }
     }
     catch (error) {
       throw new ForbiddenException();
@@ -28,9 +33,12 @@ export class AuthController {
 
   @Post('/create')
   @UsePipes(new ValidationPipe({ transform: true }))
+
   async create(@Body() createAuthDto: CreateAuthDto) {
+
     await this.authService.create(createAuthDto)
-    return 'This action returns a user';
+
+    return 'This action returns a new user from create api.';
   }
 
   // @Get(':id')

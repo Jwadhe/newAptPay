@@ -1,7 +1,7 @@
-import { ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
-import { randomBytes } from 'crypto';
+import { createCipheriv,createDecipheriv, randomBytes, scrypt } from 'crypto';
 import { Model } from 'mongoose';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -84,20 +84,40 @@ export class AuthService {
 
 
   async signup(CreateAuthDto: CreateAuthDto): Promise<any> {
+
     let user = await this.authModel.findOne({
       email: CreateAuthDto.email,
     });
+
     if (user) {
+      // throw new NotFoundException('already exist!')
       return 'User already exists!';
     }
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(CreateAuthDto.password, salt);
+
     const reqBody = {
       firstName: CreateAuthDto.firstName,
       lastName: CreateAuthDto.lastName,
       email: CreateAuthDto.email,
       password: hash,
     }
+//     const iv = randomBytes(16);
+//     const key = (await promisify(scrypt)('salt', 32)) as Buffer;
+//     const cipher = createCipheriv('aes-256-ctr', key, iv);
+
+//     const textToEncrypt = 'Nest';
+//     const encryptedText = Buffer.concat([
+//     cipher.update(textToEncrypt),
+//     cipher.final(),
+// ]);
+
+//     const decipher = createDecipheriv('aes-256-ctr', key, iv);
+//     const decryptedText = Buffer.concat([
+//     decipher.update(encryptedText),
+//     decipher.final(),
+// ]);
+   
     const newUser = new this.authModel(reqBody);
     return await newUser.save();
 
@@ -107,9 +127,11 @@ export class AuthService {
 
   async create(createAuthDto: CreateAuthDto) {
     try {
-      const dataa = await this.authModel.create(createAuthDto)
-      return dataa
-
+     const data =  await this.authModel.create(createAuthDto)
+     console.log(data);
+     
+      return data
+      
     } catch (e) {
       throw new Error(e)
 

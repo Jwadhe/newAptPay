@@ -2,18 +2,18 @@ import { ApiProperty, OmitType } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateAuthDto {
-    // @IsString({
-    //     message: 'Require First Name!',
-    // })
+    @IsString({
+        message: 'Require First Name!',
+    })
     @ApiProperty({
         example: 'John',
         description: 'Enter Your First Name',
       })      
       firstName: string;
 
-    //   @IsString({
-    //     message: 'Require Last Name!',
-    // })
+      @IsString({
+        message: 'Require Last Name!',
+    })
     @ApiProperty({
         example: 'Sir',
         description: 'Enter Your Last Name',
@@ -38,13 +38,13 @@ export class CreateAuthDto {
       })      
       password: string;
       
-      @IsString({
-        message: 'Require Active!',
-    })
-    @ApiProperty({
-        example: 'ACTIVE',
-        description: 'User is Active',
-      })      
-      isActive: string; 
+    //   @IsString({
+    //     message: 'Require Active!',
+    // })
+    // @ApiProperty({
+    //     example: 'ACTIVE',
+    //     description: 'User is Active',
+    //   })      
+    //   isActive: string; 
 
 }
