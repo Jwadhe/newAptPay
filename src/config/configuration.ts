@@ -19,6 +19,10 @@ if(process.env.ENV){
   databaseUrl = process.env.MONGODB_LOCAL_URL;
   jwtSecret = process.env.JWT_SECRET;
   port = process.env.PORT;
+  tlsCAFile = process.env.STAGE_tlsCAFile;
+  endpoint = process.env.SANDBOX_API_ENDPOINT;
+  secret = process.env.SANDBOX_API_SECRET;
+  apiKey = process.env.SANDBOX_API_KEY;
 }
 
 export default () => ({
