@@ -2,6 +2,7 @@ import {
   Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Res, BadGatewayException, ExceptionFilter,
   Catch, ArgumentsHost, HttpException, HttpStatus, ForbiddenException
 } from '@nestjs/common';
+import { emitWarning } from 'process';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -16,8 +17,11 @@ export class AuthController {
     try {
       const data = await this.authService.signup(CreateAuthDto);
       // console.log("data - ", data);
+      if(data){
+        return 'user already exist'
+      }
       return res.status(HttpStatus.CREATED).send({
-        message: "User has been created successfully",
+        message: 'User has been created successfully.',
         data
     })
       // return res.status  {
@@ -58,6 +62,24 @@ export class AuthController {
       httpStatus: HttpStatus.CREATED,
       message: 'Success',
       data: userdata,
+    }
+  }
+
+  @Post('/gethash')
+  async gethash(@Res() res,req, @Body() email): Promise<any>{
+
+    var axiosBody = JSON.stringify({ ...req.body });
+    console.log(axiosBody, 'axiosBody')
+
+    
+    // let hash = await this.authService.generateBodyHash(axiosBody)
+    // console.log(hash);
+    
+
+    return{
+      status: true,
+      HttpStatus: HttpStatus.CREATED,
+      message: 'Success',
     }
   }
 

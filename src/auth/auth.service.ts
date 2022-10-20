@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { createCipheriv,createDecipheriv, randomBytes, scrypt } from 'crypto';
@@ -93,6 +93,7 @@ export class AuthService {
       // throw new NotFoundException('already exist!')
       return 'User already exists!';
     }
+
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(CreateAuthDto.password, salt);
 
@@ -102,21 +103,6 @@ export class AuthService {
       email: CreateAuthDto.email,
       password: hash,
     }
-//     const iv = randomBytes(16);
-//     const key = (await promisify(scrypt)('salt', 32)) as Buffer;
-//     const cipher = createCipheriv('aes-256-ctr', key, iv);
-
-//     const textToEncrypt = 'Nest';
-//     const encryptedText = Buffer.concat([
-//     cipher.update(textToEncrypt),
-//     cipher.final(),
-// ]);
-
-//     const decipher = createDecipheriv('aes-256-ctr', key, iv);
-//     const decryptedText = Buffer.concat([
-//     decipher.update(encryptedText),
-//     decipher.final(),
-// ]);
    
     const newUser = new this.authModel(reqBody);
     return await newUser.save();
@@ -128,9 +114,9 @@ export class AuthService {
   async create(createAuthDto: CreateAuthDto) {
     try {
      const data =  await this.authModel.create(createAuthDto)
-     console.log(data);
+      console.log(data);
      
-      return data
+      return this.authModel
       
     } catch (e) {
       throw new Error(e)
@@ -144,7 +130,7 @@ export class AuthService {
     try {
       const user = this.authModel.find({email })
       if(!user){
-        throw new Error('User Not Registered')
+        throw new UnauthorizedException();
       }
       // if (user == false) {
       //   throw new Error('Email not verified');
@@ -172,6 +158,9 @@ export class AuthService {
     }
   }
 
+ public async generateBodyHash():Promise<any>{
+
+ }
 
 //   async signin(CreateAuthDto: CreateAuthDto): Promise<any> {
 //     try {
