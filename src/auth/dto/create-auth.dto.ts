@@ -27,7 +27,7 @@ export class CreateAuthDto {
         example: 'John@gmail.com',
         description: 'Enter Your Email',
       })      
-      email: string;
+      email: any;
 
       @IsString({
         message: 'Require Password!',
@@ -37,6 +37,7 @@ export class CreateAuthDto {
         description: 'Enter Your Password',
       })      
       password: string;
+
       
     //   @IsString({
     //     message: 'Require Active!',
