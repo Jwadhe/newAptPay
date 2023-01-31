@@ -83,29 +83,21 @@ export class AuthService {
   // }
 
 
-  async signup(CreateAuthDto: CreateAuthDto): Promise<any> {
+  async signup(CreateAuthDto: CreateAuthDto,res): Promise<any> {
 
-    let user = await this.authModel.findOne({
-      email: CreateAuthDto.email,
-    });
-
+    let user = await this.authModel.findOne({email: CreateAuthDto.email})
+    console.log(user,'user');
+    
     if (user) {
       // throw new NotFoundException('already exist!')
-      return 'User already exists!';
+      return res.send({message:'User already exists!' });
     }
 
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(CreateAuthDto.password, salt);
 
-    const reqBody = {
-      firstName: CreateAuthDto.firstName,
-      lastName: CreateAuthDto.lastName,
-      email: CreateAuthDto.email,
-      password: hash,
-    }
-   
-    const newUser = new this.authModel(reqBody);
-    return await newUser.save();
+    const reqbody = await this.authModel.create(CreateAuthDto)  
+    return reqbody.save()
 
   }
 

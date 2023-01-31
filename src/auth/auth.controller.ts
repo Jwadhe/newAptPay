@@ -15,21 +15,11 @@ export class AuthController {
   @Post('/signup')
   async Signup(@Res() res, @Body() CreateAuthDto: CreateAuthDto) {
     try {
-      const data = await this.authService.signup(CreateAuthDto);
+      const data = await this.authService.signup(CreateAuthDto,res);
       // console.log("data - ", data);
-      if(data){
-        return 'user already exist'
-      }
-      return res.status(HttpStatus.CREATED).send({
-        message: 'User has been created successfully.',
-        data
-    })
-      // return res.status  {
-      //   HttpStatus: 200,
-      //   data,
-        
-      // }
+      return res.data.send({Message: 'signup successsfully'})
     }
+
     catch (error) {
       throw new ForbiddenException();
     }
